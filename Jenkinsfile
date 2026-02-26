@@ -13,22 +13,25 @@ pipeline {
                 echo 'Tests passed successfully'
             }
         }
+
         stage('Create HTML Report') {
             steps {
-                sh '''
-                  mkdir -p report
-                  echo "<html>
-                          <head><title>Build Report</title></head>
-                          <body>
-                              <h1>Jenkins HTML Publisher Demo</h1>
-                              <p>Build Number: ${BUILD_NUMBER}</p>
-                              <p>Status: SUCCESS</p>
-                          </body>
-                        </html>" > report/index.html
+                bat '''
+                if not exist report mkdir report
+
+                echo ^<html^> > report\\index.html
+                echo ^<head^>^<title^>Build Report^</title^>^</head^> >> report\\index.html
+                echo ^<body^> >> report\\index.html
+                echo ^<h1^>Jenkins HTML Publisher Demo^</h1^> >> report\\index.html
+                echo ^<p^>Build Number: %BUILD_NUMBER%^</p^> >> report\\index.html
+                echo ^<p^>Status: SUCCESS^</p^> >> report\\index.html
+                echo ^</body^> >> report\\index.html
+                echo ^</html^> >> report\\index.html
                 '''
             }
         }
     }
+
     post {
         success {
             publishHTML([
